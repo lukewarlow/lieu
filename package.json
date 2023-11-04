@@ -1,0 +1,29 @@
+{
+  "name": "lit-vue",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite serve",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vue-reactivity/watch": "^0.2.0",
+    "@vue/reactivity": "^3.3.7",
+    "lit": "^3.0.2",
+    "lit-html": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "18.18.8",
+    "autoprefixer": "^10.4.14",
+    "lit-web-types": "^0.1.5",
+    "typescript": "5.2.2",
+    "vite": "^4.5.0"
+  },
+  "browserslist": [
+    "last 2 chrome versions",
+    "last 2 edge versions",
+    "last 1 firefox version",
+    "last 1 safari version"
+  ]
+}
