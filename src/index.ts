@@ -50,6 +50,7 @@ export interface ComponentDefinition {
 export interface SetupContext {
     emit(name: string, data?: unknown): boolean;
     internals: ElementInternals;
+    self: HTMLElement;
 }
 
 export function defineComponent(definition: ComponentDefinition): CustomElementConstructor & {compName: string} {
@@ -61,7 +62,6 @@ export function defineComponent(definition: ComponentDefinition): CustomElementC
             return Object.keys(definition.props ?? {});
         }
 
-        readonly #renderRoot: DocumentFragment;
         readonly #internals: ElementInternals;
         readonly #classes: string = "";
 
@@ -82,7 +82,7 @@ export function defineComponent(definition: ComponentDefinition): CustomElementC
             lifecycleHooks.forEach((lifecycleHook) => {
                 this._lifecycleHooks.set(lifecycleHook, []);
             });
-            this.#renderRoot = this.attachShadow({ mode: definition.mode ?? 'open' });
+            this.attachShadow({ mode: definition.mode ?? 'open' });
             this.#classes = this.getAttribute('class') ?? '';
             this.removeAttribute('class');
             this.#internals = this.attachInternals();
@@ -107,7 +107,8 @@ export function defineComponent(definition: ComponentDefinition): CustomElementC
                 }
                 this.#render = definition.setup(this.reactiveProps, {
                     emit: this.emit.bind(this),
-                    internals: this.#internals
+                    internals: this.#internals,
+                    self: this,
                 });
             });
         }
@@ -116,7 +117,7 @@ export function defineComponent(definition: ComponentDefinition): CustomElementC
             this._lifecycleHooks.get('onBeforeMount')!.forEach(hook => hook());
             this.#renderEffect = effect(() => {
                 this._lifecycleHooks.get('onBeforeUpdate')!.forEach(hook => hook());
-                render(this.#render!(this.#classes, this.style.cssText), this.#renderRoot, {host: this});
+                render(this.#render!(this.#classes, this.style.cssText), this.shadowRoot!, {host: this});
                 this._lifecycleHooks.get('onUpdated')!.forEach(hook => hook());
             });
 
