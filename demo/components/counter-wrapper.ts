@@ -1,4 +1,4 @@
-import {defineComponent} from "../utils/component";
+import {defineComponent} from "../../src";
 import {html} from "lit-html";
 
 export default defineComponent({

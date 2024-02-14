@@ -1,4 +1,4 @@
-import {PropDefinition} from './component';
+import {PropDefinition} from '../index';
 
 /** All code below this point based on Vue.js code */
 export function validateProp(name: string, value: unknown, prop: PropDefinition): void {

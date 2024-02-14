@@ -1,24 +1,37 @@
 {
-  "name": "lit-vue",
+  "name": "@lukewarlow/lieu",
   "version": "0.1.0",
-  "private": true,
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "module": "./dist/lieu.js",
+  "exports": {
+    ".": {
+      "import": "./dist/lieu.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lukewarlow/lieu"
+  },
   "scripts": {
     "dev": "vite serve",
     "build": "vite build",
     "preview": "vite preview"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@vue-reactivity/watch": "^0.2.0",
-    "@vue/reactivity": "^3.3.7",
-    "lit": "^3.0.2",
-    "lit-html": "^3.0.2"
+    "@vue/reactivity": "^3.4.19",
+    "lit-html": "^3.1.2"
   },
   "devDependencies": {
-    "@types/node": "18.18.8",
-    "autoprefixer": "^10.4.14",
     "lit-web-types": "^0.1.5",
-    "typescript": "5.2.2",
-    "vite": "^4.5.0"
+    "typescript": "5.3.3",
+    "vite": "^5.1.2",
+    "vite-plugin-dts": "^3.7.2"
   },
   "browserslist": [
     "last 2 chrome versions",

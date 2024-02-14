@@ -1,8 +1,9 @@
-import {defineComponent} from "../utils/component";
+import {defineComponent} from "../../src";
 import {html} from "lit-html";
 
 export default defineComponent({
 	name: 'BaseCounter',
+	encapsulate: true,
 	props: {
 		count: {
 			type: Object,
