@@ -49,6 +49,7 @@ export interface ComponentDefinition {
 
 export interface SetupContext {
     emit(name: string, data?: unknown): boolean;
+    internals: ElementInternals;
 }
 
 export function defineComponent(definition: ComponentDefinition): CustomElementConstructor & {compName: string} {
@@ -61,6 +62,7 @@ export function defineComponent(definition: ComponentDefinition): CustomElementC
         }
 
         readonly #renderRoot: DocumentFragment;
+        readonly #internals: ElementInternals;
         readonly #classes: string = "";
 
         #render: RenderFunction | null = null;
@@ -83,7 +85,7 @@ export function defineComponent(definition: ComponentDefinition): CustomElementC
             this.#renderRoot = this.attachShadow({ mode: definition.mode ?? 'open' });
             this.#classes = this.getAttribute('class') ?? '';
             this.removeAttribute('class');
-
+            this.#internals = this.attachInternals();
             // @ts-ignore
             onBeforeMount(() => {
                 if (definition.props) {
@@ -105,6 +107,7 @@ export function defineComponent(definition: ComponentDefinition): CustomElementC
                 }
                 this.#render = definition.setup(this.reactiveProps, {
                     emit: this.emit.bind(this),
+                    internals: this.#internals
                 });
             });
         }
@@ -113,8 +116,7 @@ export function defineComponent(definition: ComponentDefinition): CustomElementC
             this._lifecycleHooks.get('onBeforeMount')!.forEach(hook => hook());
             this.#renderEffect = effect(() => {
                 this._lifecycleHooks.get('onBeforeUpdate')!.forEach(hook => hook());
-                const foo = this.#render!(this.#classes, this.style.cssText)
-                render(foo, this.#renderRoot, {host: this});
+                render(this.#render!(this.#classes, this.style.cssText), this.#renderRoot, {host: this});
                 this._lifecycleHooks.get('onUpdated')!.forEach(hook => hook());
             });
 
