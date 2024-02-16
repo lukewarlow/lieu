@@ -1,6 +1,7 @@
 import {defineConfig} from 'vite';
 import { resolve }  from 'node:path';
 import dtsPlugin from "vite-plugin-dts";
+import lieuPlugin from "./lieu-vite-plugin";
 
 export default defineConfig({
 	build: {
@@ -19,5 +20,8 @@ export default defineConfig({
 		}
 	},
 	define: { 'process.env.NODE_ENV': '"production"' },
-	plugins: [dtsPlugin({rollupTypes: true})]
+	plugins: [
+		lieuPlugin(),
+		dtsPlugin({rollupTypes: true}),
+	]
 })
