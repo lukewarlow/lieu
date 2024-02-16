@@ -1,4 +1,5 @@
-import {defineComponent, css} from "../../src";
+<script>
+import {defineComponent} from "../../src";
 import {html} from "lit-html";
 import {watch} from "@vue-reactivity/watch";
 
@@ -12,16 +13,6 @@ export default defineComponent({
 			}
 		}
 	},
-	styles: [
-		css`
-			@layer base;
-			@scope {
-				:scope:state(negative) {
-					color: red;
-				}
-			}
-		`
-	],
 	setup(props, ctx) {
 		function increment() {
 			props.count.value.data++;
@@ -40,11 +31,20 @@ export default defineComponent({
 		});
 
 		return () => {
-			return html`
+            return html`
                 <button @click=${decrement}>Decrement</button>
                 ${props.count.value.data}
                 <button @click=${increment}>Increment</button>
-			`;
-		}
+            `;
+        }
 	}
 });
+</script>
+
+<style>
+@scope {
+    :scope:state(negative) {
+        color: red;
+    }
+}
+</style>

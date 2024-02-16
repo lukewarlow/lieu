@@ -1,5 +1,5 @@
 import CounterWrapper from "./components/counter-wrapper";
-import Counter from "./components/counter";
+import Counter from "./components/counter.lieu";
 import App from "./app";
 
 window.customElements.define(CounterWrapper.compName, CounterWrapper);
