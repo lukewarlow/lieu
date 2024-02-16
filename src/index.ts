@@ -2,7 +2,9 @@ import {effect, ReactiveEffectRunner, Ref, ref, stop} from '@vue/reactivity';
 import {render, TemplateResult} from 'lit-html';
 import {ConstructorType, validateProp} from './utils/props';
 import {toKebabCase} from './utils/strings';
-import './utils/half-light';
+import {
+    initialiseHalfLight, adopt
+} from "./utils/half-light";
 
 let currentInstance: any;
 
@@ -41,9 +43,8 @@ export interface ComponentDefinition {
     props?: {
         [name: string]: PropDefinition
     };
-    mode?: 'open' | 'closed';
-    encapsulate?: boolean;
-
+    mode?: ShadowRootMode | 'light' | 'half-light';
+    styles?: CSSStyleSheet[];
     setup(props: Record<string, Ref>, ctx: SetupContext): RenderFunction;
 }
 
@@ -53,10 +54,11 @@ export interface SetupContext {
     self: HTMLElement;
 }
 
+initialiseHalfLight()
+
 export function defineComponent(definition: ComponentDefinition): CustomElementConstructor & {compName: string} {
     return class extends HTMLElement {
         static compName: string = toKebabCase(definition.name);
-        readonly encapsulate: boolean = definition.encapsulate ?? false;
 
         static get observedAttributes() {
             return Object.keys(definition.props ?? {});
@@ -78,11 +80,20 @@ export function defineComponent(definition: ComponentDefinition): CustomElementC
         constructor() {
             super();
 
+            definition.mode ??= 'half-light';
+
             currentInstance = this;
             lifecycleHooks.forEach((lifecycleHook) => {
                 this._lifecycleHooks.set(lifecycleHook, []);
             });
-            this.attachShadow({ mode: definition.mode ?? 'open' });
+            if (definition.mode !== 'light') {
+                this.attachShadow({ mode: (definition.mode.replace('half-light', 'open') as ShadowRootMode) });
+                this.shadowRoot!.adoptedStyleSheets.push(...(definition.styles ?? []));
+                if (definition.mode === 'half-light') {
+                    adopt(this);
+                }
+            }
+
             this.#classes = this.getAttribute('class') ?? '';
             this.removeAttribute('class');
             this.#internals = this.attachInternals();
@@ -117,7 +128,7 @@ export function defineComponent(definition: ComponentDefinition): CustomElementC
             this._lifecycleHooks.get('onBeforeMount')!.forEach(hook => hook());
             this.#renderEffect = effect(() => {
                 this._lifecycleHooks.get('onBeforeUpdate')!.forEach(hook => hook());
-                render(this.#render!(this.#classes, this.style.cssText), this.shadowRoot!, {host: this});
+                render(this.#render!(this.#classes, this.style.cssText), definition.mode === 'light' ? this : this.shadowRoot!, {host: this});
                 this._lifecycleHooks.get('onUpdated')!.forEach(hook => hook());
             });
 
@@ -146,3 +157,5 @@ export function defineComponent(definition: ComponentDefinition): CustomElementC
         }
     }
 }
+
+export { default as css } from './utils/css';

@@ -11,6 +11,7 @@ export default defineComponent({
 			}
 		}
 	},
+	mode: 'light',
 	setup(props, ctx) {
 		return () => {
 			return html`

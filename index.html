@@ -4,15 +4,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="screen-orientation" content="portrait">
     <meta name="color-scheme" content="light dark">
-    <meta http-equiv="Content-Security-Policy" content="require-trusted-types-for 'script'; trusted-types lit-html;">
+    <meta http-equiv="Content-Security-Policy" content="require-trusted-types-for 'script'; trusted-types lit-html; default-src 'self';">
     <title>Demo</title>
-    <style>
-        @media screen, (--crossroot) {
-            button {
-                background-color: red;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/demo/assets/demo.css" media="screen, (--crossroot)">
 </head>
 <body>
 <base-app></base-app>
