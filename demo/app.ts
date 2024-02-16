@@ -1,4 +1,4 @@
-import {defineComponent} from "../src";
+import {css, defineComponent} from "../src";
 import {html} from "lit-html";
 import {ref} from "@vue/reactivity";
 
@@ -7,7 +7,7 @@ export default defineComponent({
     setup(props, ctx) {
         const count = ref({data: 0});
 
-        return (classNames: string, styles: string) =>
+        return () =>
             html`
 				<div>
                     ${count.value.data}

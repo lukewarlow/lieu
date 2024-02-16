@@ -36,7 +36,7 @@ export interface PropDefinition {
     required?: boolean;
 }
 
-export type RenderFunction = (classNames: string, styles: string) => TemplateResult;
+export type RenderFunction = () => TemplateResult;
 
 export interface ComponentDefinition {
     name: string;
@@ -65,7 +65,6 @@ export function defineComponent(definition: ComponentDefinition): CustomElementC
         }
 
         readonly #internals: ElementInternals;
-        readonly #classes: string = "";
 
         #render: RenderFunction | null = null;
         #renderEffect: ReactiveEffectRunner | null = null;
@@ -94,8 +93,6 @@ export function defineComponent(definition: ComponentDefinition): CustomElementC
                 }
             }
 
-            this.#classes = this.getAttribute('class') ?? '';
-            this.removeAttribute('class');
             this.#internals = this.attachInternals();
             // @ts-ignore
             onBeforeMount(() => {
@@ -128,7 +125,7 @@ export function defineComponent(definition: ComponentDefinition): CustomElementC
             this._lifecycleHooks.get('onBeforeMount')!.forEach(hook => hook());
             this.#renderEffect = effect(() => {
                 this._lifecycleHooks.get('onBeforeUpdate')!.forEach(hook => hook());
-                render(this.#render!(this.#classes, this.style.cssText), definition.mode === 'light' ? this : this.shadowRoot!, {host: this});
+                render(this.#render!(), definition.mode === 'light' ? this : this.shadowRoot!, {host: this});
                 this._lifecycleHooks.get('onUpdated')!.forEach(hook => hook());
             });
 
