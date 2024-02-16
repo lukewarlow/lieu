@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "lit-web-types": "^0.1.5",
+    "magic-string": "^0.30.7",
     "typescript": "5.3.3",
     "vite": "^5.1.2",
     "vite-plugin-dts": "^3.7.2"
